@@ -1,5 +1,6 @@
 package fi.hel.resilient_logger.types;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -7,6 +8,7 @@ import java.util.function.Predicate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fi.hel.resilient_logger.builders.ResilientLoggerConfigBuilder;
+import fi.hel.resilient_logger.utils.Utils;
 
 public record ResilientLoggerConfig(
         List<ComponentConfig> sources,
@@ -16,6 +18,7 @@ public record ResilientLoggerConfig(
         @JsonProperty("batch_limit") int batchLimit,
         @JsonProperty("chunk_size") int chunkSize,
         @JsonProperty("store_old_entries_days") int storeOldEntriesDays) {
+
     private record SchemaRule(Object value, Predicate<Object> validator, String label) {
     }
 
@@ -47,5 +50,13 @@ public record ResilientLoggerConfig(
                         "Configuration error: '%s' must be a %s.", key, rule.label()));
             }
         });
+    }
+    
+    public static ResilientLoggerConfig fromConfig(Map<String, Object> config) {
+        Map<String, Object> sanitizedConfig = new HashMap<>(config);
+        sanitizedConfig.put("sources", Utils.ensureList(config.get("sources")));
+        sanitizedConfig.put("targets", Utils.ensureList(config.get("targets")));
+
+        return Utils.sharedObjectMapper().convertValue(sanitizedConfig, ResilientLoggerConfig.class);
     }
 }

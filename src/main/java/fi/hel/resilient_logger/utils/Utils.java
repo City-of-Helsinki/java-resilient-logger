@@ -2,12 +2,14 @@ package fi.hel.resilient_logger.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HexFormat;
@@ -19,6 +21,7 @@ public class Utils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
+            .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
@@ -37,6 +40,10 @@ public class Utils {
             Long.class, v -> v instanceof Number n ? n.longValue() : Long.parseLong(v.toString().trim()),
             Double.class, v -> v instanceof Number n ? n.doubleValue() : Double.parseDouble(v.toString().trim()),
             Boolean.class, v -> v instanceof Boolean b ? b : parseBooleanStrict(v.toString().trim()));
+
+    public static ObjectMapper sharedObjectMapper() {
+        return objectMapper;
+    }
 
     public static <T> T convertValue(Object value, Class<T> type) {
         if (value == null) {
@@ -139,5 +146,13 @@ public class Utils {
         } catch (Exception e) {
             throw new RuntimeException("Failed to instantiate " + className, e);
         }
+    }
+
+    public static Object ensureList(Object obj) {
+        if (obj instanceof Map<?, ?> map) {
+            return new ArrayList<>(map.values());
+        }
+
+        return obj;
     }
 }

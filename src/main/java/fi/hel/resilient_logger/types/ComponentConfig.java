@@ -2,11 +2,15 @@ package fi.hel.resilient_logger.types;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import fi.hel.resilient_logger.utils.Utils;
 
 public record ComponentConfig(
         String className,
         Map<String, Object> options) {
+            
+    @JsonCreator
     public ComponentConfig(Map<String, Object> options) {
         this(extractClassName(options), options);
     }
