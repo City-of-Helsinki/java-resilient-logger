@@ -32,6 +32,8 @@ public class ResilientLogger {
 
     /**
      * Factory method to initialize the logger with class names from configuration.
+     * Sources and targets are instantiated by reflection from the
+     * {@code className} on each {@link ComponentConfig}.
      */
     public static ResilientLogger create(ResilientLoggerConfig config) {
         try {
@@ -41,15 +43,34 @@ public class ResilientLogger {
             for (ComponentConfig source : config.sources()) {
                 sources.add(Utils.instantiate(source.className(), AbstractLogSource.class, source));
             }
-            
+
             for (ComponentConfig target : config.targets()) {
                 targets.add(Utils.instantiate(target.className(), AbstractLogTarget.class, target));
             }
 
-            return new ResilientLogger(config, sources, targets);
+            return create(config, sources, targets);
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize ResilientLogger from config", e);
         }
+    }
+
+    /**
+     * Factory method to initialize the logger with pre-built sources and
+     * targets. Use this overload when sources/targets are wired by an
+     * external container (e.g. Spring) and need to receive constructor-
+     * injected dependencies that the reflection path cannot supply.
+     */
+    public static ResilientLogger create(
+            ResilientLoggerConfig config,
+            List<AbstractLogSource> sources,
+            List<AbstractLogTarget> targets) {
+        if (sources.isEmpty()) {
+            throw new IllegalArgumentException("At least one log source is required.");
+        }
+        if (targets.isEmpty()) {
+            throw new IllegalArgumentException("At least one log target is required.");
+        }
+        return new ResilientLogger(config, List.copyOf(sources), List.copyOf(targets));
     }
 
     /**
