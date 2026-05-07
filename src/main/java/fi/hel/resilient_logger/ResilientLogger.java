@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import fi.hel.resilient_logger.sources.AbstractLogSource;
+import fi.hel.resilient_logger.sources.AbstractLogSource.Entry;
 import fi.hel.resilient_logger.targets.AbstractLogTarget;
 import fi.hel.resilient_logger.types.ComponentConfig;
 import fi.hel.resilient_logger.types.ResilientLoggerConfig;
@@ -83,32 +85,50 @@ public class ResilientLogger {
     }
 
     /**
-     * Processes unsent entries. Uses try-with-resources to ensure the Stream (and
-     * underlying resources)
-     * are closed correctly.
+     * Processes unsent entries. Sources are iterated sequentially so each
+     * source can be told which of its entries actually shipped, and the
+     * configured {@code batchLimit} is preserved across them.
      */
     public Map<String, Boolean> submitUnsentEntries() {
         Map<String, Boolean> results = new HashMap<>();
+        int remaining = config.batchLimit();
 
-        try (Stream<AbstractLogSource.Entry> entries = logSources
-                .stream()
-                .flatMap(logSource -> logSource.getUnsentEntries(this.config.chunkSize()))) {
-            entries
-                    .limit(this.config.batchLimit())
-                    .forEach(entry -> {
-                        try {
-                            boolean result = this.submit(entry);
+        for (AbstractLogSource source : logSources) {
+            if (remaining <= 0) {
+                break;
+            }
 
-                            if (result) {
-                                entry.markSent();
-                            }
+            List<Entry> sentInChunk = new ArrayList<>();
+            AtomicInteger processed = new AtomicInteger();
 
-                            results.put(entry.getId(), result);
-                        } catch (Exception e) {
-                            logger.log(Level.ERROR, "Critical failure processing entry {0}", entry.getId(), e);
-                            results.put(entry.getId(), false);
-                        }
-                    });
+            try (Stream<Entry> entries = source.getUnsentEntries(config.chunkSize())) {
+                entries.limit(remaining).forEach(entry -> {
+                    processed.incrementAndGet();
+                    boolean ok;
+                    try {
+                        ok = submit(entry);
+                    } catch (Exception e) {
+                        logger.log(Level.ERROR, "Critical failure processing entry {0}", entry.getId(), e);
+                        ok = false;
+                    }
+                    results.put(entry.getId(), ok);
+                    if (ok) {
+                        sentInChunk.add(entry);
+                    }
+                });
+            }
+
+            if (!sentInChunk.isEmpty()) {
+                try {
+                    source.markSent(sentInChunk);
+                } catch (Exception e) {
+                    logger.log(Level.ERROR, "Failed to mark {0} entries as sent on source {1}",
+                            sentInChunk.size(), source.getClass().getName(), e);
+                    sentInChunk.forEach(entry -> results.put(entry.getId(), false));
+                }
+            }
+
+            remaining -= processed.get();
         }
 
         return results;
