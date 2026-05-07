@@ -89,6 +89,11 @@ public class ResilientLogger implements Closeable {
      * Processes unsent entries. Sources are iterated sequentially so each
      * source can be told which of its entries actually shipped, and the
      * configured {@code batchLimit} is preserved across them.
+     *
+     * <p>The returned map is keyed by {@link AbstractLogSource.Entry#getId()}.
+     * If two sources can produce entries with the same id, only the
+     * last-written outcome survives in the map; callers are expected to
+     * keep entry IDs globally unique across sources.
      */
     public Map<String, Boolean> submitUnsentEntries() {
         Map<String, Boolean> results = new HashMap<>();

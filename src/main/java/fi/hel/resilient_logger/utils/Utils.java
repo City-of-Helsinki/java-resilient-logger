@@ -143,6 +143,10 @@ public class Utils {
             throw new RuntimeException(String.format(
                     "No constructor found with matching types for %s for arguments: (%s)",
                     className, paramTypesStr));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(String.format(
+                    "Constructor for %s is not accessible. The matching constructor must be declared public.",
+                    className), e);
         } catch (Exception e) {
             throw new RuntimeException("Failed to instantiate " + className, e);
         }
