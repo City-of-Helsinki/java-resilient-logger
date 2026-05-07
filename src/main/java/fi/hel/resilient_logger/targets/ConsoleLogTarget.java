@@ -17,8 +17,11 @@ public class ConsoleLogTarget extends AbstractLogTarget {
     private static final Map<Integer, Level> severityToLevel = Arrays.stream(Level.values())
         .collect(Collectors.toMap(Level::getSeverity, level -> level));
 
+    private final boolean markAsSent;
+
     public ConsoleLogTarget(ComponentConfig config) {
-        super(config, false);
+        super(config, config.getValueOrDefault("required", false));
+        this.markAsSent = config.getValueOrDefault("mark_as_sent", false);
     }
 
     @Override
@@ -28,7 +31,7 @@ public class ConsoleLogTarget extends AbstractLogTarget {
         Level level = severityToLevel.getOrDefault(event.level(), Level.INFO);
 
         logger.log(level, "{0}", Utils.toMap(document));
-        return false;
+        return markAsSent;
     }
 
 }
