@@ -1,5 +1,6 @@
 package fi.hel.resilient_logger.sources;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -34,6 +35,18 @@ public abstract class AbstractLogSource {
      * Purges logs that have already been sent.
      */
     public abstract List<String> clearSentEntries(int daysToKeep);
+
+    /**
+     * Marks a batch of entries as sent. The default implementation calls
+     * {@link Entry#markSent()} on each entry, which preserves the per-row
+     * behavior expected by existing implementations. JPA-backed sources
+     * should override this with a single bulk update
+     * (e.g. {@code UPDATE ... WHERE id IN (...)}) to avoid one round-trip
+     * per entry.
+     */
+    public void markSent(Collection<Entry> entries) {
+        entries.forEach(Entry::markSent);
+    }
 
     public interface Entry {
         /**
