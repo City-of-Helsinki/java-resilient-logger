@@ -1,5 +1,6 @@
 package fi.hel.resilient_logger.sources;
 
+import java.io.Closeable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -7,7 +8,7 @@ import java.util.stream.Stream;
 import fi.hel.resilient_logger.types.AuditLogDocument;
 import fi.hel.resilient_logger.types.ComponentConfig;
 
-public abstract class AbstractLogSource {
+public abstract class AbstractLogSource implements Closeable {
     protected final ComponentConfig config;
 
     /**
@@ -46,6 +47,15 @@ public abstract class AbstractLogSource {
      */
     public void markSent(Collection<Entry> entries) {
         entries.forEach(Entry::markSent);
+    }
+
+    /**
+     * Releases any resources held by this source (e.g. database
+     * connections, executors). The default implementation does nothing.
+     * Called by {@link fi.hel.resilient_logger.ResilientLogger#close()}.
+     */
+    @Override
+    public void close() {
     }
 
     public interface Entry {

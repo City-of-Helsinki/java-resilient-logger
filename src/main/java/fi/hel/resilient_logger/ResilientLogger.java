@@ -1,5 +1,6 @@
 package fi.hel.resilient_logger;
 
+import java.io.Closeable;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import fi.hel.resilient_logger.types.ComponentConfig;
 import fi.hel.resilient_logger.types.ResilientLoggerConfig;
 import fi.hel.resilient_logger.utils.Utils;
 
-public class ResilientLogger {
+public class ResilientLogger implements Closeable {
     private static final Logger logger = System.getLogger(ResilientLogger.class.getName());
 
     private final ResilientLoggerConfig config;
@@ -145,6 +146,32 @@ public class ResilientLogger {
         } catch (Exception e) {
             logger.log(Level.ERROR, "Failed to clear sent entries across sources", e);
             return List.of();
+        }
+    }
+
+    /**
+     * Closes all targets and sources, releasing any resources they hold
+     * (HTTP clients, connection pools, etc.). Failures from individual
+     * components are logged but never propagated, so a single bad target
+     * cannot prevent the rest from closing.
+     */
+    @Override
+    public void close() {
+        for (AbstractLogTarget target : logTargets) {
+            try {
+                target.close();
+            } catch (Exception e) {
+                logger.log(Level.ERROR, "Failed to close target {0}",
+                        target.getClass().getName(), e);
+            }
+        }
+        for (AbstractLogSource source : logSources) {
+            try {
+                source.close();
+            } catch (Exception e) {
+                logger.log(Level.ERROR, "Failed to close source {0}",
+                        source.getClass().getName(), e);
+            }
         }
     }
 

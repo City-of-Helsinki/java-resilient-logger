@@ -1,5 +1,6 @@
 package fi.hel.resilient_logger.targets;
 
+import java.io.IOException;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.URI;
@@ -27,8 +28,10 @@ import fi.hel.resilient_logger.utils.Utils;
 public class ElasticsearchLogTarget extends AbstractLogTarget {
     private static final Logger logger = System.getLogger(ElasticsearchLogTarget.class.getName());
 
-    private String index;
-    private ElasticsearchClient client;
+    private final String index;
+    private final RestClient restClient;
+    private final RestClientTransport transport;
+    private final ElasticsearchClient client;
 
     public ElasticsearchLogTarget(ComponentConfig config) {
         super(config);
@@ -60,23 +63,18 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
             parsedPort = (uri.getPort() != -1) ? uri.getPort() : port;
         }
 
-        this.client = this.createClient(username, password, parsedHost, parsedPort, parsedScheme);
-    }
-
-    private ElasticsearchClient createClient(String username, String password, String host, int port, String scheme) {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-
         credentialsProvider.setCredentials(
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(username, password));
 
-        RestClient restClient = RestClient.builder(new HttpHost(host, port, scheme))
+        this.restClient = RestClient.builder(new HttpHost(parsedHost, parsedPort, parsedScheme))
                 .setHttpClientConfigCallback(
                         httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
 
-        RestClientTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
-        return new ElasticsearchClient(transport);
+        this.transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+        this.client = new ElasticsearchClient(transport);
     }
 
     @Override
@@ -128,9 +126,23 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
         return false;
     }
 
+    @Override
+    public void close() {
+        try {
+            transport.close();
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Failed to close Elasticsearch transport", e);
+        }
+        try {
+            restClient.close();
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Failed to close Elasticsearch REST client", e);
+        }
+    }
+
     /**
      * Logs the exception and return always false.
-     * 
+     *
      * @param string           hash
      * @param AuditLogDocument document
      * @param Exception        e
