@@ -36,6 +36,15 @@ public class ResilientLogger {
      * {@code className} on each {@link ComponentConfig}.
      */
     public static ResilientLogger create(ResilientLoggerConfig config) {
+        if (config.sources().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configuration error: 'sources' must be a non-empty array.");
+        }
+        if (config.targets().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configuration error: 'targets' must be a non-empty array.");
+        }
+
         try {
             List<AbstractLogSource> sources = new ArrayList<>();
             List<AbstractLogTarget> targets = new ArrayList<>();
