@@ -8,6 +8,12 @@ import java.util.stream.Stream;
 import fi.hel.resilient_logger.types.AuditLogDocument;
 import fi.hel.resilient_logger.types.ComponentConfig;
 
+/**
+ * Base type for log sources. The {@link Entry} contract defined here is
+ * normative for both reflection-driven and bean-driven uses (see
+ * {@link fi.hel.resilient_logger.ResilientLogger#create(fi.hel.resilient_logger.types.ResilientLoggerConfig)}
+ * and the pre-built-instances overload).
+ */
 public abstract class AbstractLogSource implements Closeable {
     protected final ComponentConfig config;
 
@@ -65,8 +71,17 @@ public abstract class AbstractLogSource implements Closeable {
         public abstract String getId();
 
         /**
-         * Converts the log entry into a document format suitable for storage (e.g.,
-         * Elasticsearch).
+         * Converts the log entry into a document format suitable for storage
+         * (e.g., Elasticsearch).
+         *
+         * <p><b>Must be deterministic for the lifetime of the entry.</b>
+         * {@code ElasticsearchLogTarget} uses a content hash of the
+         * serialized document as the document ID with {@code OpType.Create},
+         * so any difference between calls (e.g., a fresh
+         * {@code OffsetDateTime.now()} baked in at call time, or a mutable
+         * field touched between attempts) produces a different ID and
+         * causes a duplicate document on retry. Capture timestamps at
+         * entity-creation time, not at {@code getDocument()} time.
          */
         public abstract AuditLogDocument getDocument();
 
@@ -77,6 +92,13 @@ public abstract class AbstractLogSource implements Closeable {
 
         /**
          * Marks this specific entry as sent in the underlying data store.
+         *
+         * <p>Should be effectively idempotent: calling {@code markSent()} on
+         * an already-sent entry must be safe. Throwing from this method
+         * causes the entry to be retried on the next cycle, so the
+         * implementer is responsible for transactional behavior. The
+         * batched {@link AbstractLogSource#markSent(Collection)} hook is
+         * preferred for most data stores.
          */
         public abstract void markSent();
     }
