@@ -62,6 +62,13 @@ public class AuditLogEventBuilder {
   }
 
   public AuditLogEvent build() {
+    if (operation == null || operation.isBlank()) {
+      throw new IllegalStateException("AuditLogEvent.operation must be set to a non-blank value.");
+    }
+    if (message == null || message.isBlank()) {
+      throw new IllegalStateException("AuditLogEvent.message must be set to a non-blank value.");
+    }
+
     return new AuditLogEvent(
         actor,
         dateTime,

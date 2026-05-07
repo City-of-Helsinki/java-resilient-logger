@@ -18,6 +18,13 @@ public class AuditLogDocumentBuilder {
   }
 
   public AuditLogDocument build() {
+    if (timestamp == null || timestamp.isBlank()) {
+      throw new IllegalStateException("AuditLogDocument.timestamp must be set to a non-blank value.");
+    }
+    if (auditEvent == null) {
+      throw new IllegalStateException("AuditLogDocument.auditEvent must be set.");
+    }
+
     return new AuditLogDocument(timestamp, auditEvent);
   }
 }
