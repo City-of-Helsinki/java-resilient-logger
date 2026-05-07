@@ -10,8 +10,16 @@ public abstract class AbstractLogSource {
     protected final ComponentConfig config;
 
     /**
-     * Requirement: Implementation must provide a public no-args constructor
-     * for configuration-based instantiation.
+     * Construction paths:
+     * <ul>
+     *   <li>When loaded via {@code ResilientLogger.create(config)} (the
+     *       reflection path), implementations must expose a public
+     *       constructor accepting a single {@link ComponentConfig} argument.</li>
+     *   <li>When registered as a pre-built instance via the
+     *       {@code ResilientLogger.create(config, sources, targets)} overload,
+     *       implementations may use any constructor signature they like
+     *       (including ones with framework-injected dependencies).</li>
+     * </ul>
      */
     protected AbstractLogSource(ComponentConfig config) {
         this.config = config;
