@@ -43,37 +43,56 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
         int port = config.getValueOrDefault("es_port", 9200);
         String scheme = config.getValueOrDefault("es_scheme", "https");
 
-        String parsedScheme;
-        String parsedHost;
-        int parsedPort;
-
-        if (url == null || url.isEmpty()) {
-            parsedScheme = scheme;
-            parsedHost = host;
-            parsedPort = port;
-        } else {
-            // Prepend scheme if missing for URI.create to work correctly
-            String urlWithScheme = url.contains("://") ? url : scheme + "://" + url;
-            URI uri = URI.create(urlWithScheme);
-
-            parsedScheme = (uri.getScheme() != null) ? uri.getScheme() : scheme;
-            parsedHost = uri.getHost();
-            // Fallback to the 'port' variable (9200 or config) if URI has no explicit port
-            parsedPort = (uri.getPort() != -1) ? uri.getPort() : port;
-        }
+        HostInfo hostInfo = parseHostInfo(url, scheme, host, port);
 
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(username, password));
 
-        RestClient restClient = RestClient.builder(new HttpHost(parsedHost, parsedPort, parsedScheme))
+        RestClient restClient = RestClient.builder(new HttpHost(hostInfo.host(), hostInfo.port(), hostInfo.scheme()))
                 .setHttpClientConfigCallback(
                         httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
 
         this.transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
         this.client = new ElasticsearchClient(transport);
+    }
+
+    /**
+     * Resolves the {@code (scheme, host, port)} tuple used to build the
+     * Elasticsearch REST client. If {@code url} is set it takes precedence;
+     * otherwise the discrete {@code scheme}/{@code host}/{@code port}
+     * fallback is used. A path component on the URL is rejected so a
+     * misconfigured {@code es_url: "localhost:9200/my-index"} fails fast
+     * rather than producing a cryptic NPE inside {@code HttpHost}.
+     */
+    static HostInfo parseHostInfo(String url, String fallbackScheme, String fallbackHost, int fallbackPort) {
+        if (url == null || url.isEmpty()) {
+            return new HostInfo(fallbackScheme, fallbackHost, fallbackPort);
+        }
+
+        // Prepend scheme if missing for URI.create to work correctly
+        String urlWithScheme = url.contains("://") ? url : fallbackScheme + "://" + url;
+        URI uri = URI.create(urlWithScheme);
+
+        if (uri.getHost() == null) {
+            throw new IllegalArgumentException(
+                    "Configuration error: 'es_url' is not a valid host URL: " + url);
+        }
+        if (uri.getPath() != null && !uri.getPath().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configuration error: 'es_url' must not contain a path component: " + url);
+        }
+
+        String parsedScheme = (uri.getScheme() != null) ? uri.getScheme() : fallbackScheme;
+        // Fallback to the 'port' variable (9200 or config) if URI has no explicit port
+        int parsedPort = (uri.getPort() != -1) ? uri.getPort() : fallbackPort;
+
+        return new HostInfo(parsedScheme, uri.getHost(), parsedPort);
+    }
+
+    record HostInfo(String scheme, String host, int port) {
     }
 
     @Override
