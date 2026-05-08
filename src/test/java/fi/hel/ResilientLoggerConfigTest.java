@@ -68,6 +68,7 @@ public class ResilientLoggerConfigTest {
     }
 
     @Test
+    @SuppressWarnings("resource") // create() is expected to throw before any logger is constructed
     void reflectionFactoryRejectsEmptySources() {
         ResilientLoggerConfig config = ResilientLoggerConfig.builder()
                 .environment("test")

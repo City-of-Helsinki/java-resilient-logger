@@ -51,6 +51,7 @@ class ResilientLoggerBeanFactoryTest {
     }
 
     @Test
+    @SuppressWarnings("resource") // create() is expected to throw before any logger is constructed
     void rejectsEmptySources() {
         ResilientLoggerConfig config = ResilientLoggerConfig.builder()
                 .environment("test")
@@ -64,6 +65,7 @@ class ResilientLoggerBeanFactoryTest {
     }
 
     @Test
+    @SuppressWarnings("resource") // create() is expected to throw before any logger is constructed
     void rejectsEmptyTargets() {
         ResilientLoggerConfig config = ResilientLoggerConfig.builder()
                 .environment("test")
