@@ -82,4 +82,15 @@ class ComponentConfigTest {
 
         assertTrue(ex.getMessage().contains("Configuration error for key 'port'"));
     }
+
+    @Test
+    @DisplayName("Should reject a null defaultValue with a clear message")
+    void testNullDefaultValue() {
+        ComponentConfig config = new ComponentConfig(options);
+
+        NullPointerException ex = assertThrows(NullPointerException.class,
+                () -> config.getValueOrDefault("anything", null));
+
+        assertTrue(ex.getMessage().contains("defaultValue"));
+    }
 }
