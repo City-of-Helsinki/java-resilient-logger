@@ -34,31 +34,35 @@ class ConsoleLogTargetTest {
 
     @Test
     void defaultsToNotMarkAsSent() {
-        ConsoleLogTarget target = new ConsoleLogTarget(
-                new ComponentConfig(Map.of("class", ConsoleLogTarget.class.getName())));
-        assertFalse(target.submit(SAMPLE_ENTRY));
+        try (ConsoleLogTarget target = new ConsoleLogTarget(
+                new ComponentConfig(Map.of("class", ConsoleLogTarget.class.getName())))) {
+            assertFalse(target.submit(SAMPLE_ENTRY));
+        }
     }
 
     @Test
     void markAsSentTrueReturnsTrue() {
-        ConsoleLogTarget target = new ConsoleLogTarget(new ComponentConfig(Map.of(
+        try (ConsoleLogTarget target = new ConsoleLogTarget(new ComponentConfig(Map.of(
                 "class", ConsoleLogTarget.class.getName(),
-                "mark_as_sent", true)));
-        assertTrue(target.submit(SAMPLE_ENTRY));
+                "mark_as_sent", true)))) {
+            assertTrue(target.submit(SAMPLE_ENTRY));
+        }
     }
 
     @Test
     void requiredDefaultsToFalse() {
-        ConsoleLogTarget target = new ConsoleLogTarget(
-                new ComponentConfig(Map.of("class", ConsoleLogTarget.class.getName())));
-        assertFalse(target.isRequired());
+        try (ConsoleLogTarget target = new ConsoleLogTarget(
+                new ComponentConfig(Map.of("class", ConsoleLogTarget.class.getName())))) {
+            assertFalse(target.isRequired());
+        }
     }
 
     @Test
     void requiredHonoredWhenSetToTrue() {
-        ConsoleLogTarget target = new ConsoleLogTarget(new ComponentConfig(Map.of(
+        try (ConsoleLogTarget target = new ConsoleLogTarget(new ComponentConfig(Map.of(
                 "class", ConsoleLogTarget.class.getName(),
-                "required", true)));
-        assertTrue(target.isRequired());
+                "required", true)))) {
+            assertTrue(target.isRequired());
+        }
     }
 }
