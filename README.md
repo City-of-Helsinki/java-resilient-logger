@@ -39,7 +39,7 @@ dependencies {
 
 ### Option B: flat-file dependency
 
-Copy `build/libs/resilientlogger-0.0.1.jar` into the consumer and reference it via `files(...)` or a flat repository. Useful for CI builds that produce the JAR as an artifact.
+Copy `build/libs/resilient-logger-0.0.1.jar` into the consumer and reference it via `files(...)` or a flat repository. Useful for CI builds that produce the JAR as an artifact.
 
 ### Custom Elasticsearch targets
 

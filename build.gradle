@@ -7,7 +7,7 @@ group = 'fi.hel'
 version = '0.0.1'
 
 base {
-    archivesName = 'resilient_logger'
+    archivesName = 'resilient-logger'
 }
 
 java {
