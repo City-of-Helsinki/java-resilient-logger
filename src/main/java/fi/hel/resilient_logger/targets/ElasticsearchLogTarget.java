@@ -29,7 +29,6 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
     private static final Logger logger = System.getLogger(ElasticsearchLogTarget.class.getName());
 
     private final String index;
-    private final RestClient restClient;
     private final RestClientTransport transport;
     private final ElasticsearchClient client;
 
@@ -68,7 +67,7 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(username, password));
 
-        this.restClient = RestClient.builder(new HttpHost(parsedHost, parsedPort, parsedScheme))
+        RestClient restClient = RestClient.builder(new HttpHost(parsedHost, parsedPort, parsedScheme))
                 .setHttpClientConfigCallback(
                         httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
@@ -128,15 +127,11 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
 
     @Override
     public void close() {
+        // Closes the underlying RestClient transitively.
         try {
             transport.close();
         } catch (IOException e) {
             logger.log(Level.WARNING, "Failed to close Elasticsearch transport", e);
-        }
-        try {
-            restClient.close();
-        } catch (IOException e) {
-            logger.log(Level.WARNING, "Failed to close Elasticsearch REST client", e);
         }
     }
 

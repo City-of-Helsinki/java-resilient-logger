@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import fi.hel.resilient_logger.sources.AbstractLogSource;
@@ -48,10 +47,10 @@ public class ResilientLogger implements Closeable {
                     "Configuration error: 'targets' must be a non-empty array.");
         }
 
-        try {
-            List<AbstractLogSource> sources = new ArrayList<>();
-            List<AbstractLogTarget> targets = new ArrayList<>();
+        List<AbstractLogSource> sources = new ArrayList<>();
+        List<AbstractLogTarget> targets = new ArrayList<>();
 
+        try {
             for (ComponentConfig source : config.sources()) {
                 sources.add(Utils.instantiate(source.className(), AbstractLogSource.class, source));
             }
@@ -59,11 +58,11 @@ public class ResilientLogger implements Closeable {
             for (ComponentConfig target : config.targets()) {
                 targets.add(Utils.instantiate(target.className(), AbstractLogTarget.class, target));
             }
-
-            return create(config, sources, targets);
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize ResilientLogger from config", e);
         }
+
+        return create(config, sources, targets);
     }
 
     /**
@@ -94,6 +93,13 @@ public class ResilientLogger implements Closeable {
      * If two sources can produce entries with the same id, only the
      * last-written outcome survives in the map; callers are expected to
      * keep entry IDs globally unique across sources.
+     *
+     * <p>The boolean indicates whether the entry has reached a
+     * fully-committed state for this cycle. If a target shipped the entry
+     * but {@link AbstractLogSource#markSent(Collection)} subsequently threw
+     * for the chunk, the affected entries flip to {@code false} so callers
+     * see them as "not done" — they will be retried next cycle, and
+     * Elasticsearch's content-hash dedup absorbs the duplicate.
      */
     public Map<String, Boolean> submitUnsentEntries() {
         Map<String, Boolean> results = new HashMap<>();
@@ -104,24 +110,24 @@ public class ResilientLogger implements Closeable {
                 break;
             }
 
-            List<Entry> sentInChunk = new ArrayList<>();
-            AtomicInteger processed = new AtomicInteger();
-
+            List<Entry> processed;
             try (Stream<Entry> entries = source.getUnsentEntries(config.chunkSize())) {
-                entries.limit(remaining).forEach(entry -> {
-                    processed.incrementAndGet();
-                    boolean ok;
-                    try {
-                        ok = submit(entry);
-                    } catch (Exception e) {
-                        logger.log(Level.ERROR, "Critical failure processing entry {0}", entry.getId(), e);
-                        ok = false;
-                    }
-                    results.put(entry.getId(), ok);
-                    if (ok) {
-                        sentInChunk.add(entry);
-                    }
-                });
+                processed = entries.limit(remaining).toList();
+            }
+
+            List<Entry> sentInChunk = new ArrayList<>();
+            for (Entry entry : processed) {
+                boolean ok;
+                try {
+                    ok = submit(entry);
+                } catch (Exception e) {
+                    logger.log(Level.ERROR, "Critical failure processing entry {0}", entry.getId(), e);
+                    ok = false;
+                }
+                results.put(entry.getId(), ok);
+                if (ok) {
+                    sentInChunk.add(entry);
+                }
             }
 
             if (!sentInChunk.isEmpty()) {
@@ -134,7 +140,7 @@ public class ResilientLogger implements Closeable {
                 }
             }
 
-            remaining -= processed.get();
+            remaining -= processed.size();
         }
 
         return results;

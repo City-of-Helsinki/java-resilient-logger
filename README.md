@@ -14,11 +14,34 @@ A robust, configuration-driven logging library designed to ensure audit logs are
 
 ## Installation
 
-Add the dependency to your `build.gradle.kts`:
+This artifact is not published to a public Maven repository. Build it locally and either install it into your Maven local cache or include the JAR directly.
+
+### Option A: install into the local Maven cache (recommended)
+
+From this repo:
 
 ```
-implementation("fi.hel:resilient-logger:0.0.1")
+./gradlew publishToMavenLocal
 ```
+
+Then in the consuming project's `build.gradle.kts`:
+
+```kotlin
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation("fi.hel:resilient-logger:0.0.1")
+}
+```
+
+### Option B: flat-file dependency
+
+Copy `build/libs/resilient_logger-0.0.1.jar` into the consumer and reference it via `files(...)` or a flat repository. Useful for CI builds that produce the JAR as an artifact.
+
+### Custom Elasticsearch targets
 
 If you write a custom Elasticsearch-flavored target by extending `ElasticsearchLogTarget`, you must also declare the Elasticsearch client dependency yourself — it is no longer exposed transitively:
 
