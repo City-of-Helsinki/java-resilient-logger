@@ -17,8 +17,8 @@ public class MockLogSource extends AbstractLogSource {
     private static List<Entry> entries = new ArrayList<>();
 
     public static class MockLogEntry implements AbstractLogSource.Entry {
-        private String id;
-        private AuditLogEvent event;
+        private final String id;
+        private final AuditLogEvent event;
         private boolean sent;
 
         public MockLogEntry(String id, AuditLogEvent event) {
@@ -70,11 +70,11 @@ public class MockLogSource extends AbstractLogSource {
     @Override
     public List<String> clearSentEntries(int retentionDays) {
         List<AbstractLogSource.Entry> toDelete = MockLogSource.entries.stream()
-                .filter(it -> it.isSent())
+                .filter(Entry::isSent)
                 .toList();
 
         List<String> ids = toDelete.stream()
-                .map(it -> it.getId())
+                .map(Entry::getId)
                 .toList();
 
         MockLogSource.entries = new ArrayList<>(MockLogSource.entries.stream()
