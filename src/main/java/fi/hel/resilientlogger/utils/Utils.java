@@ -112,17 +112,13 @@ public class Utils {
     }
 
     public static <T> Class<? extends T> tryLoadClass(String className, Class<T> baseClass) throws Exception {
-        try {
-            Class<?> cls = Class.forName(className);
+        Class<?> cls = Class.forName(className);
 
-            if (baseClass.isAssignableFrom(cls)) {
-                return cls.asSubclass(baseClass);
-            } else {
-                throw new ClassCastException(String.format(
-                        "Class %s does not extend/implement %s", className, baseClass.getName()));
-            }
-        } catch (ClassNotFoundException e) {
-            throw e;
+        if (baseClass.isAssignableFrom(cls)) {
+            return cls.asSubclass(baseClass);
+        } else {
+            throw new ClassCastException(String.format(
+                    "Class %s does not extend/implement %s", className, baseClass.getName()));
         }
     }
 

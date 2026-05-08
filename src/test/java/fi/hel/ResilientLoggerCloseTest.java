@@ -69,7 +69,6 @@ class ResilientLoggerCloseTest {
     }
 
     @Test
-    @SuppressWarnings("resource") // close() is invoked explicitly to verify the count
     void closeCascadesToSourcesAndTargetsExactlyOnce() {
         CountingSource source = new CountingSource(
                 new ComponentConfig(Map.of("class", MockLogSource.class.getName())));

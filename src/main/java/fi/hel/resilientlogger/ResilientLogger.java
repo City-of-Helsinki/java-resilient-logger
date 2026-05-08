@@ -3,10 +3,7 @@ package fi.hel.resilientlogger;
 import java.io.Closeable;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import fi.hel.resilientlogger.sources.AbstractLogSource;

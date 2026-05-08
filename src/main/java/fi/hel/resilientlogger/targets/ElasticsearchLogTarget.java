@@ -37,6 +37,7 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
 
         this.index = config.getValue("es_index", String.class);
         String username = config.getValue("es_username", String.class);
+        assert username != null;
         String password = config.getValue("es_password", String.class);
         String url = config.getValue("es_url", String.class);
         String host = config.getValueOrDefault("es_host", "localhost");
@@ -114,7 +115,7 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
                 return true;
             }
         } catch (ElasticsearchException e) {
-            /**
+            /*
              * The document key used to store log entry is the hash of the contents.
              * If we receive conflict error, it means that the given entry is already
              * sent to the Elasticsearch.
@@ -129,13 +130,13 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
                 return true;
             }
 
-            /**
+            /*
              * Non-conflict ElasticsearchException, log it and keep going to avoid
              * transaction rollbacks.
              */
             return this.handleException(hash, document, e);
         } catch (Exception e) {
-            /**
+            /*
              * Unknown exception, log it and keep going to avoid transaction rollbacks.
              */
             return this.handleException(hash, document, e);
@@ -157,9 +158,9 @@ public class ElasticsearchLogTarget extends AbstractLogTarget {
     /**
      * Logs the exception and return always false.
      *
-     * @param string           hash
-     * @param AuditLogDocument document
-     * @param Exception        e
+     * @param hash String
+     * @param document AuditLogDocument
+     * @param e Exception
      * @return false
      */
     private boolean handleException(String hash, AuditLogDocument document, Exception e) {

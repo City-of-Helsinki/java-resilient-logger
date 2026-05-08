@@ -68,7 +68,7 @@ public abstract class AbstractLogSource implements Closeable {
         /**
          * Unique identifier for this specific log entry (e.g., UUID or Database ID).
          */
-        public abstract String getId();
+        String getId();
 
         /**
          * Converts the log entry into a document format suitable for storage
@@ -83,12 +83,12 @@ public abstract class AbstractLogSource implements Closeable {
          * causes a duplicate document on retry. Capture timestamps at
          * entity-creation time, not at {@code getDocument()} time.
          */
-        public abstract AuditLogDocument getDocument();
+        AuditLogDocument getDocument();
 
         /**
          * Returns true if this specific entry has already been successfully dispatched.
          */
-        public abstract boolean isSent();
+        boolean isSent();
 
         /**
          * Marks this specific entry as sent in the underlying data store.
@@ -100,6 +100,6 @@ public abstract class AbstractLogSource implements Closeable {
          * batched {@link AbstractLogSource#markSent(Collection)} hook is
          * preferred for most data stores.
          */
-        public abstract void markSent();
+        void markSent();
     }
 }
