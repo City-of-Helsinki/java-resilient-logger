@@ -42,12 +42,13 @@ class ResilientLoggerBeanFactoryTest {
                 .environment("test")
                 .build());
 
-        ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target));
-        Map<String, Boolean> results = logger.submitUnsentEntries();
+        try (ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target))) {
+            Map<String, Boolean> results = logger.submitUnsentEntries();
 
-        assertTrue(results.get("bean-id"));
-        assertTrue(MockLogTarget.submittedEntries().stream().anyMatch(e -> e.getId().equals("bean-id")),
-                "the supplied target instance should have received the entry");
+            assertTrue(results.get("bean-id"));
+            assertTrue(MockLogTarget.submittedEntries().stream().anyMatch(e -> e.getId().equals("bean-id")),
+                    "the supplied target instance should have received the entry");
+        }
     }
 
     @Test

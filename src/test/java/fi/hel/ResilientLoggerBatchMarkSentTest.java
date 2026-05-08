@@ -69,14 +69,15 @@ class ResilientLoggerBatchMarkSentTest {
                 .environment("test")
                 .origin("test")
                 .build();
-        ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target));
 
-        logger.submitUnsentEntries();
+        try (ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target))) {
+            logger.submitUnsentEntries();
 
-        assertEquals(1, source.batches.size(), "markSent should be called exactly once for the chunk");
-        assertEquals(List.of("id-0", "id-1", "id-2", "id-3", "id-4"), source.batches.get(0));
-        assertTrue(added.stream().noneMatch(AbstractLogSource.Entry::isSent),
-                "dispatch loop must not short-circuit the batched hook by calling entry.markSent()");
+            assertEquals(1, source.batches.size(), "markSent should be called exactly once for the chunk");
+            assertEquals(List.of("id-0", "id-1", "id-2", "id-3", "id-4"), source.batches.get(0));
+            assertTrue(added.stream().noneMatch(AbstractLogSource.Entry::isSent),
+                    "dispatch loop must not short-circuit the batched hook by calling entry.markSent()");
+        }
     }
 
     @Test
@@ -99,11 +100,12 @@ class ResilientLoggerBatchMarkSentTest {
                 .environment("test")
                 .origin("test")
                 .build();
-        ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target));
 
-        Map<String, Boolean> results = logger.submitUnsentEntries();
+        try (ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target))) {
+            Map<String, Boolean> results = logger.submitUnsentEntries();
 
-        assertFalse(results.get("ok-id"));
-        assertTrue(source.batches.isEmpty(), "no entry shipped → markSent should not be called at all");
+            assertFalse(results.get("ok-id"));
+            assertTrue(source.batches.isEmpty(), "no entry shipped → markSent should not be called at all");
+        }
     }
 }
