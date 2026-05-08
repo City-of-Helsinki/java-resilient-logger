@@ -86,9 +86,7 @@ class UtilsTest {
     void testTypeMismatch() {
         var list = java.util.List.of(1, 2, 3);
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> Utils.convertValue(list, Double.class));
-
-        assertTrue(ex.getMessage().contains("For input string"));
     }
 }

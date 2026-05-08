@@ -12,27 +12,20 @@ public class MockLogTarget extends AbstractLogTarget {
         super(config);
     }
 
-    private static boolean required = true;
     private static boolean result = true;
     private static List<AbstractLogSource.Entry> entries = new ArrayList<>();
 
     public static void reset() {
-        required = true;
         result = true;
         entries = new ArrayList<>();
-    }
-
-    public static void setRequired(boolean required) {
-        MockLogTarget.required = required;
     }
 
     public static void setResult(boolean result) {
         MockLogTarget.result = result;
     }
 
-    @Override
-    public boolean isRequired() {
-        return MockLogTarget.required;
+    public static List<AbstractLogSource.Entry> submittedEntries() {
+        return entries;
     }
 
     @Override

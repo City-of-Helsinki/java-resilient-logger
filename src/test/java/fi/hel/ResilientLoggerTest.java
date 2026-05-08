@@ -30,7 +30,7 @@ class ResilientLoggerTest {
                             new ComponentConfig(MockLogSource.class.getName(), Map.of())
                         ))
                         .targets(List.of(
-                            new ComponentConfig(MockLogTarget.class.getName(), Map.of())
+                            new ComponentConfig(MockLogTarget.class.getName(), Map.of("required", true))
                         ))
                         .environment("test")
                         .origin("test")
@@ -39,7 +39,7 @@ class ResilientLoggerTest {
 
     @Test
     void testSuccessfulEndToEndFlow() {
-        MockLogSource.addEntry(
+        Entry entry = MockLogSource.addEntry(
                 "test-id-1",
                 AuditLogEvent.builder()
                         .operation("TEST_OP")
@@ -53,11 +53,12 @@ class ResilientLoggerTest {
 
         assertTrue(results.get("test-id-1"), "Entry should be marked as successful");
         assertEquals(1, results.size());
+        assertTrue(entry.isSent(), "Entry should be marked sent in the source");
     }
 
     @Test
     void testRequiredTargetFailure() {
-        MockLogSource.addEntry(
+        Entry entry = MockLogSource.addEntry(
                 "fail-id",
                 AuditLogEvent.builder()
                         .operation("TEST_OP")
@@ -66,12 +67,12 @@ class ResilientLoggerTest {
                         .build());
 
         MockLogTarget.setResult(false);
-        MockLogTarget.setRequired(true); // This target MUST succeed
 
         Map<String, Boolean> results = logger.submitUnsentEntries();
 
         // Verify that because the target failed and was required, the entry is FALSE
         assertFalse(results.get("fail-id"), "Required target failure should result in false");
+        assertFalse(entry.isSent(), "Entry must not be marked sent when required target failed");
     }
 
     @Test
