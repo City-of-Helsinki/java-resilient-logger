@@ -54,15 +54,16 @@ class ResilientLoggerNonRequiredFailureTest {
                 "class", MockLogTarget.class.getName(),
                 "required", true)));
 
-        ResilientLogger logger = ResilientLogger.create(
+        try (ResilientLogger logger = ResilientLogger.create(
                 ResilientLoggerConfig.builder().environment("test").origin("test").build(),
                 List.of(source),
-                List.of(nonRequired, required));
+                List.of(nonRequired, required))) {
 
-        Map<String, Boolean> results = logger.submitUnsentEntries();
+            Map<String, Boolean> results = logger.submitUnsentEntries();
 
-        assertTrue(results.get("entry-1"),
-                "Non-required target failure must not stop a required target from receiving the entry");
-        assertTrue(MockLogTarget.submittedEntries().stream().anyMatch(e -> e.getId().equals("entry-1")));
+            assertTrue(results.get("entry-1"),
+                    "Non-required target failure must not stop a required target from receiving the entry");
+            assertTrue(MockLogTarget.submittedEntries().stream().anyMatch(e -> e.getId().equals("entry-1")));
+        }
     }
 }
