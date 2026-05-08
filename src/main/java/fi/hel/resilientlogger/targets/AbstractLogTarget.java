@@ -1,9 +1,9 @@
-package fi.hel.resilient_logger.targets;
+package fi.hel.resilientlogger.targets;
 
 import java.io.Closeable;
 
-import fi.hel.resilient_logger.sources.AbstractLogSource;
-import fi.hel.resilient_logger.types.ComponentConfig;
+import fi.hel.resilientlogger.sources.AbstractLogSource;
+import fi.hel.resilientlogger.types.ComponentConfig;
 
 public abstract class AbstractLogTarget implements Closeable {
     protected final ComponentConfig config;
@@ -49,7 +49,7 @@ public abstract class AbstractLogTarget implements Closeable {
     /**
      * Releases any resources held by this target (e.g. HTTP clients,
      * connection pools). The default implementation does nothing.
-     * Called by {@link fi.hel.resilient_logger.ResilientLogger#close()}.
+     * Called by {@link fi.hel.resilientlogger.ResilientLogger#close()}.
      */
     @Override
     public void close() {

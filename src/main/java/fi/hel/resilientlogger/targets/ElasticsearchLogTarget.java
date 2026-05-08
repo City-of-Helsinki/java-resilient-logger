@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger.targets;
+package fi.hel.resilientlogger.targets;
 
 import java.io.IOException;
 import java.lang.System.Logger;
@@ -19,11 +19,11 @@ import co.elastic.clients.elasticsearch._types.Result;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import fi.hel.resilient_logger.sources.AbstractLogSource;
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
-import fi.hel.resilient_logger.types.ComponentConfig;
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.sources.AbstractLogSource;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.ComponentConfig;
+import fi.hel.resilientlogger.utils.Utils;
 
 public class ElasticsearchLogTarget extends AbstractLogTarget {
     private static final Logger logger = System.getLogger(ElasticsearchLogTarget.class.getName());

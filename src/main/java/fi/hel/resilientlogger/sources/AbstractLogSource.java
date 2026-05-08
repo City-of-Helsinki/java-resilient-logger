@@ -1,17 +1,17 @@
-package fi.hel.resilient_logger.sources;
+package fi.hel.resilientlogger.sources;
 
 import java.io.Closeable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.ComponentConfig;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.ComponentConfig;
 
 /**
  * Base type for log sources. The {@link Entry} contract defined here is
  * normative for both reflection-driven and bean-driven uses (see
- * {@link fi.hel.resilient_logger.ResilientLogger#create(fi.hel.resilient_logger.types.ResilientLoggerConfig)}
+ * {@link fi.hel.resilientlogger.ResilientLogger#create(fi.hel.resilientlogger.types.ResilientLoggerConfig)}
  * and the pre-built-instances overload).
  */
 public abstract class AbstractLogSource implements Closeable {
@@ -58,7 +58,7 @@ public abstract class AbstractLogSource implements Closeable {
     /**
      * Releases any resources held by this source (e.g. database
      * connections, executors). The default implementation does nothing.
-     * Called by {@link fi.hel.resilient_logger.ResilientLogger#close()}.
+     * Called by {@link fi.hel.resilientlogger.ResilientLogger#close()}.
      */
     @Override
     public void close() {

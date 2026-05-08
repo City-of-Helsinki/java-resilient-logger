@@ -1,8 +1,8 @@
-package fi.hel.resilient_logger.types;
+package fi.hel.resilientlogger.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fi.hel.resilient_logger.builders.AuditLogDocumentBuilder;
+import fi.hel.resilientlogger.builders.AuditLogDocumentBuilder;
 
 public record AuditLogDocument(
         @JsonProperty("@timestamp") String timestamp,

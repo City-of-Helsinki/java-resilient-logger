@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger.utils;
+package fi.hel.resilientlogger.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

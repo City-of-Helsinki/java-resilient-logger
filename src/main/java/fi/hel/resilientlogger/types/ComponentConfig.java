@@ -1,11 +1,11 @@
-package fi.hel.resilient_logger.types;
+package fi.hel.resilientlogger.types;
 
 import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.utils.Utils;
 
 public record ComponentConfig(
         String className,

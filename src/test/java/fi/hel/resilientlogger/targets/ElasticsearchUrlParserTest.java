@@ -1,11 +1,11 @@
-package fi.hel.resilient_logger.targets;
+package fi.hel.resilientlogger.targets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import fi.hel.resilient_logger.targets.ElasticsearchLogTarget.HostInfo;
+import fi.hel.resilientlogger.targets.ElasticsearchLogTarget.HostInfo;
 
 class ElasticsearchUrlParserTest {
 

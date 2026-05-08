@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import fi.hel.resilient_logger.ResilientLogger;
-import fi.hel.resilient_logger.types.ResilientLoggerConfig;
+import fi.hel.resilientlogger.ResilientLogger;
+import fi.hel.resilientlogger.types.ResilientLoggerConfig;
 
 public class ResilientLoggerConfigTest {
     @Test

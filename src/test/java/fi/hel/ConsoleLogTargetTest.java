@@ -8,11 +8,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import fi.hel.resilient_logger.sources.AbstractLogSource.Entry;
-import fi.hel.resilient_logger.targets.ConsoleLogTarget;
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
-import fi.hel.resilient_logger.types.ComponentConfig;
+import fi.hel.resilientlogger.sources.AbstractLogSource.Entry;
+import fi.hel.resilientlogger.targets.ConsoleLogTarget;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.ComponentConfig;
 
 class ConsoleLogTargetTest {
 

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import fi.hel.resilient_logger.sources.AbstractLogSource;
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
-import fi.hel.resilient_logger.types.ComponentConfig;
+import fi.hel.resilientlogger.sources.AbstractLogSource;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.ComponentConfig;
 
 public class MockLogSource extends AbstractLogSource {
     public MockLogSource(ComponentConfig config) {

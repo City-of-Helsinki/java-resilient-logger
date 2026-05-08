@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import fi.hel.resilient_logger.builders.AuditLogDocumentBuilder;
-import fi.hel.resilient_logger.builders.AuditLogEventBuilder;
-import fi.hel.resilient_logger.types.AuditLogEvent;
+import fi.hel.resilientlogger.builders.AuditLogDocumentBuilder;
+import fi.hel.resilientlogger.builders.AuditLogEventBuilder;
+import fi.hel.resilientlogger.types.AuditLogEvent;
 
 class AuditLogBuilderValidationTest {
 

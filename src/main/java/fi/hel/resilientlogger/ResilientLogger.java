@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger;
+package fi.hel.resilientlogger;
 
 import java.io.Closeable;
 import java.lang.System.Logger;
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import fi.hel.resilient_logger.sources.AbstractLogSource;
-import fi.hel.resilient_logger.sources.AbstractLogSource.Entry;
-import fi.hel.resilient_logger.targets.AbstractLogTarget;
-import fi.hel.resilient_logger.types.ComponentConfig;
-import fi.hel.resilient_logger.types.ResilientLoggerConfig;
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.sources.AbstractLogSource;
+import fi.hel.resilientlogger.sources.AbstractLogSource.Entry;
+import fi.hel.resilientlogger.targets.AbstractLogTarget;
+import fi.hel.resilientlogger.types.ComponentConfig;
+import fi.hel.resilientlogger.types.ResilientLoggerConfig;
+import fi.hel.resilientlogger.utils.Utils;
 
 public class ResilientLogger implements Closeable {
     private static final Logger logger = System.getLogger(ResilientLogger.class.getName());

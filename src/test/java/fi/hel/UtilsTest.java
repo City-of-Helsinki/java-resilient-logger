@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.utils.Utils;
 
 class UtilsTest {
     @Test

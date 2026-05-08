@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger.targets;
+package fi.hel.resilientlogger.targets;
 
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fi.hel.resilient_logger.sources.AbstractLogSource.Entry;
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
-import fi.hel.resilient_logger.types.ComponentConfig;
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.sources.AbstractLogSource.Entry;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.ComponentConfig;
+import fi.hel.resilientlogger.utils.Utils;
 
 public class ConsoleLogTarget extends AbstractLogTarget {
     private static final Logger logger = System.getLogger(ConsoleLogTarget.class.getName());

@@ -1,9 +1,9 @@
-package fi.hel.resilient_logger.builders;
+package fi.hel.resilientlogger.builders;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import fi.hel.resilient_logger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.AuditLogEvent;
 
 public class AuditLogEventBuilder {
   private Map<String, Object> actor = Map.of();

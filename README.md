@@ -39,7 +39,7 @@ dependencies {
 
 ### Option B: flat-file dependency
 
-Copy `build/libs/resilient_logger-0.0.1.jar` into the consumer and reference it via `files(...)` or a flat repository. Useful for CI builds that produce the JAR as an artifact.
+Copy `build/libs/resilientlogger-0.0.1.jar` into the consumer and reference it via `files(...)` or a flat repository. Useful for CI builds that produce the JAR as an artifact.
 
 ### Custom Elasticsearch targets
 
@@ -68,9 +68,9 @@ resilient-logger:
   sources:
     - class: "fi.hel.app.logging.MyJpaLogSource"
   targets:
-    - class: "fi.hel.resilient_logger.targets.ConsoleLogTarget"
+    - class: "fi.hel.resilientlogger.targets.ConsoleLogTarget"
       mark_as_sent: true   # local dev: stop entries from accumulating
-    - class: "fi.hel.resilient_logger.targets.ElasticsearchLogTarget"
+    - class: "fi.hel.resilientlogger.targets.ElasticsearchLogTarget"
       required: true       # this target's failure aborts the entry's batch
       es_index: "audit-logs"
       es_username: "elastic"

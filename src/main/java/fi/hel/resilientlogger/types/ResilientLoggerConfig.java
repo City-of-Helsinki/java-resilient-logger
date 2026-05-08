@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger.types;
+package fi.hel.resilientlogger.types;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fi.hel.resilient_logger.builders.ResilientLoggerConfigBuilder;
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.builders.ResilientLoggerConfigBuilder;
+import fi.hel.resilientlogger.utils.Utils;
 
 public record ResilientLoggerConfig(
         List<ComponentConfig> sources,

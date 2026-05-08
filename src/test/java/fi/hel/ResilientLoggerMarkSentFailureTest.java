@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 
 import fi.hel.mocks.MockLogSource;
 import fi.hel.mocks.MockLogTarget;
-import fi.hel.resilient_logger.ResilientLogger;
-import fi.hel.resilient_logger.sources.AbstractLogSource;
-import fi.hel.resilient_logger.types.AuditLogEvent;
-import fi.hel.resilient_logger.types.ComponentConfig;
-import fi.hel.resilient_logger.types.ResilientLoggerConfig;
+import fi.hel.resilientlogger.ResilientLogger;
+import fi.hel.resilientlogger.sources.AbstractLogSource;
+import fi.hel.resilientlogger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.ComponentConfig;
+import fi.hel.resilientlogger.types.ResilientLoggerConfig;
 
 class ResilientLoggerMarkSentFailureTest {
 

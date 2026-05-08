@@ -1,7 +1,7 @@
-package fi.hel.resilient_logger.builders;
+package fi.hel.resilientlogger.builders;
 
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
 
 public class AuditLogDocumentBuilder {
   private String timestamp;
