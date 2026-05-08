@@ -1,8 +1,5 @@
 package fi.hel;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +14,8 @@ import fi.hel.resilientlogger.sources.AbstractLogSource;
 import fi.hel.resilientlogger.types.AuditLogEvent;
 import fi.hel.resilientlogger.types.ComponentConfig;
 import fi.hel.resilientlogger.types.ResilientLoggerConfig;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ResilientLoggerMarkSentFailureTest {
 
@@ -56,13 +55,14 @@ class ResilientLoggerMarkSentFailureTest {
                 .environment("test")
                 .origin("test")
                 .build();
-        ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target));
 
-        Map<String, Boolean> results = logger.submitUnsentEntries();
+        try (ResilientLogger logger = ResilientLogger.create(config, List.of(source), List.of(target))) {
+            Map<String, Boolean> results = logger.submitUnsentEntries();
 
-        assertFalse(results.get("a"), "markSent failure must flip already-shipped entries to false");
-        assertFalse(results.get("b"), "markSent failure must flip already-shipped entries to false");
-        assertTrue(MockLogTarget.submittedEntries().size() == 2,
-                "entries were still submitted to the target before markSent failed");
+            assertFalse(results.get("a"), "markSent failure must flip already-shipped entries to false");
+            assertFalse(results.get("b"), "markSent failure must flip already-shipped entries to false");
+            assertEquals(2, MockLogTarget.submittedEntries().size(),
+                    "entries were still submitted to the target before markSent failed");
+        }
     }
 }
