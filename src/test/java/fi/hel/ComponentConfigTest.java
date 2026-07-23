@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import fi.hel.resilient_logger.types.ComponentConfig;
+import fi.hel.resilientlogger.types.ComponentConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,5 +81,16 @@ class ComponentConfigTest {
                 () -> config.getValue("port", Integer.class));
 
         assertTrue(ex.getMessage().contains("Configuration error for key 'port'"));
+    }
+
+    @Test
+    @DisplayName("Should reject a null defaultValue with a clear message")
+    void testNullDefaultValue() {
+        ComponentConfig config = new ComponentConfig(options);
+
+        NullPointerException ex = assertThrows(NullPointerException.class,
+                () -> config.getValueOrDefault("anything", null));
+
+        assertTrue(ex.getMessage().contains("defaultValue"));
     }
 }

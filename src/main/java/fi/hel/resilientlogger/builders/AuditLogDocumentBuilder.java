@@ -1,7 +1,7 @@
-package fi.hel.resilient_logger.builders;
+package fi.hel.resilientlogger.builders;
 
-import fi.hel.resilient_logger.types.AuditLogDocument;
-import fi.hel.resilient_logger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.AuditLogDocument;
+import fi.hel.resilientlogger.types.AuditLogEvent;
 
 public class AuditLogDocumentBuilder {
   private String timestamp;
@@ -18,6 +18,13 @@ public class AuditLogDocumentBuilder {
   }
 
   public AuditLogDocument build() {
+    if (timestamp == null || timestamp.isBlank()) {
+      throw new IllegalStateException("AuditLogDocument.timestamp must be set to a non-blank value.");
+    }
+    if (auditEvent == null) {
+      throw new IllegalStateException("AuditLogDocument.auditEvent must be set.");
+    }
+
     return new AuditLogDocument(timestamp, auditEvent);
   }
 }

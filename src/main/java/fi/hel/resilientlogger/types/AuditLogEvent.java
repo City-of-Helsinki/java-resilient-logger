@@ -1,10 +1,10 @@
-package fi.hel.resilient_logger.types;
+package fi.hel.resilientlogger.types;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import fi.hel.resilient_logger.builders.AuditLogEventBuilder;
+import fi.hel.resilientlogger.builders.AuditLogEventBuilder;
 
 public record AuditLogEvent(
         Map<String, Object> actor,

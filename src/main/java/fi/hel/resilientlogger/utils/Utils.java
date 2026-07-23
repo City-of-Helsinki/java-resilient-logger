@@ -1,4 +1,4 @@
-package fi.hel.resilient_logger.utils;
+package fi.hel.resilientlogger.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -112,17 +112,13 @@ public class Utils {
     }
 
     public static <T> Class<? extends T> tryLoadClass(String className, Class<T> baseClass) throws Exception {
-        try {
-            Class<?> cls = Class.forName(className);
+        Class<?> cls = Class.forName(className);
 
-            if (baseClass.isAssignableFrom(cls)) {
-                return cls.asSubclass(baseClass);
-            } else {
-                throw new ClassCastException(String.format(
-                        "Class %s does not extend/implement %s", className, baseClass.getName()));
-            }
-        } catch (ClassNotFoundException e) {
-            throw e;
+        if (baseClass.isAssignableFrom(cls)) {
+            return cls.asSubclass(baseClass);
+        } else {
+            throw new ClassCastException(String.format(
+                    "Class %s does not extend/implement %s", className, baseClass.getName()));
         }
     }
 
@@ -143,6 +139,10 @@ public class Utils {
             throw new RuntimeException(String.format(
                     "No constructor found with matching types for %s for arguments: (%s)",
                     className, paramTypesStr));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(String.format(
+                    "Constructor for %s is not accessible. The matching constructor must be declared public.",
+                    className), e);
         } catch (Exception e) {
             throw new RuntimeException("Failed to instantiate " + className, e);
         }

@@ -1,9 +1,9 @@
-package fi.hel.resilient_logger.builders;
+package fi.hel.resilientlogger.builders;
 
 import java.util.List;
 
-import fi.hel.resilient_logger.types.ComponentConfig;
-import fi.hel.resilient_logger.types.ResilientLoggerConfig;
+import fi.hel.resilientlogger.types.ComponentConfig;
+import fi.hel.resilientlogger.types.ResilientLoggerConfig;
 
 public class ResilientLoggerConfigBuilder {
       private List<ComponentConfig> sources;

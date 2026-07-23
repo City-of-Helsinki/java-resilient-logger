@@ -1,10 +1,11 @@
-package fi.hel.resilient_logger.types;
+package fi.hel.resilientlogger.types;
 
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import fi.hel.resilient_logger.utils.Utils;
+import fi.hel.resilientlogger.utils.Utils;
 
 public record ComponentConfig(
         String className,
@@ -41,9 +42,11 @@ public record ComponentConfig(
     }
 
     public <T> T getValueOrDefault(String key, T defaultValue) {
+        Objects.requireNonNull(defaultValue, "defaultValue must not be null");
+
         @SuppressWarnings("unchecked")
         Class<T> defaultClass = (Class<T>) defaultValue.getClass();
-        
+
         T value = getValue(key, defaultClass);
         return (value != null) ? value : defaultValue;
     }

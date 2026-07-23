@@ -1,9 +1,9 @@
-package fi.hel.resilient_logger.builders;
+package fi.hel.resilientlogger.builders;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-import fi.hel.resilient_logger.types.AuditLogEvent;
+import fi.hel.resilientlogger.types.AuditLogEvent;
 
 public class AuditLogEventBuilder {
   private Map<String, Object> actor = Map.of();
@@ -62,6 +62,13 @@ public class AuditLogEventBuilder {
   }
 
   public AuditLogEvent build() {
+    if (operation == null || operation.isBlank()) {
+      throw new IllegalStateException("AuditLogEvent.operation must be set to a non-blank value.");
+    }
+    if (message == null || message.isBlank()) {
+      throw new IllegalStateException("AuditLogEvent.message must be set to a non-blank value.");
+    }
+
     return new AuditLogEvent(
         actor,
         dateTime,
