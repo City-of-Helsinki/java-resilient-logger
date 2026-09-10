@@ -38,16 +38,27 @@ resilient-logger:
   targets:
     - class: "fi.hel.resilient_logger.targets.ConsoleLogTarget"
     - class: "fi.hel.resilient_logger.targets.ElasticsearchLogTarget"
-      es_index: "audit-logs"
-      es_username: "elastic"
-      es_password: "secure-password"
-      # Option A: Full URL
-      es_url: "http://host.docker.internal:9200"
-      # Option B: Individual parts (Fallback)
-      es_host: "host.docker.internal"
-      es_port: 9200
-      es_scheme: "http"
+      es_index: ${AUDIT_LOG_ES_INDEX}
+      es_username: ${AUDIT_LOG_ES_USERNAME}
+      es_password: ${AUDIT_LOG_ES_PASSWORD}
+      es_url: ${AUDIT_LOG_ES_URL:http://host.docker.internal:9200}
 ```
+> The Elasticsearch endpoint can also be configured using the individual endpoint components (`es_scheme`, `es_host`, and `es_port`). Use these individual components only if absolutely necessary; prefer `es_url` whenever possible.
+---
+
+### Environment Variables
+
+The environment variable names below are the standard names used by the infrastructure configuration for this library. Unless your environment explicitly requires different names, use these names as-is.
+
+**Elasticsearch:**
+* `AUDIT_LOG_ES_URL` — Elasticsearch endpoint URL
+* `AUDIT_LOG_ES_USERNAME` — Elasticsearch username
+* `AUDIT_LOG_ES_PASSWORD` — Elasticsearch password
+* `AUDIT_LOG_ES_INDEX` — Elasticsearch index
+
+**General Resilient Logger Configuration:**
+* `AUDIT_LOG_ENV` — environment identifier
+* `AUDIT_LOG_ORIGIN` — identifies the application or system producing the logs
 ---
 
 ## Component Configuration
